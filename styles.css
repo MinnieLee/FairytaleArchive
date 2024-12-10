@@ -1,0 +1,176 @@
+body {
+    margin: 0;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+
+  
+  .image-collage {
+    position: relative;
+    width: 80vw;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .image-collage:hover .image-container {
+    filter: brightness(50%);
+  }
+  
+  .image-container {
+    position: absolute;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  /* Individual sizes and positions for each PNG */
+  .image-container:nth-child(1) {
+    top: 10%;
+    left: -15%;
+    z-index: 11;
+  }
+  
+  .image-container:nth-child(1) img {
+    width: 430px;
+  }
+  
+  .image-container:nth-child(2) {
+    top: 41%;
+    left: 5%;
+    z-index: 10;
+  }
+  
+  .image-container:nth-child(2) img {
+    width: 430px;
+  }
+  
+  .image-container:nth-child(3) {
+    top: 47%;
+    left: 50%;
+    z-index: 9;
+  }
+  
+  .image-container:nth-child(3) img {
+    width: 480px;
+  }
+  
+  .image-container:nth-child(4) {
+    top: 18%;
+    left: 18%;
+    z-index: 8;
+  }
+  
+  .image-container:nth-child(4) img {
+    width: 600px;
+  }
+  
+  .image-container:nth-child(5) {
+    top: 28%;
+    left: 75%;
+    z-index: 7;
+  }
+  
+  .image-container:nth-child(5) img {
+    width: 350px;
+  }
+  
+  .image-container:nth-child(6) {
+    top:35%;
+    left: -16%;
+    z-index: 6;
+  }
+  
+  .image-container:nth-child(6) img {
+    width: 620px;
+  }
+  
+  .image-container:nth-child(7) {
+    top: 61%;
+    left: 22%;
+    z-index: 5;
+  }
+  
+  .image-container:nth-child(7) img {
+    width: 700px;
+  }
+  
+  .image-container:nth-child(8) {
+    top: 75%;
+    left: 60%;
+    z-index: 4;
+  }
+  
+  .image-container:nth-child(8) img {
+    width: 700px;
+  }
+  
+  .image-container:nth-child(9) {
+    top: -13%;
+    left: 68%;
+    z-index: 3;
+  }
+  
+  .image-container:nth-child(9) img {
+    width: 600px;
+  }
+  
+  .image-container:nth-child(10) {
+    top: -13%;
+    left: 28%;
+    z-index: 2;
+  }
+  
+  .image-container:nth-child(10) img {
+    width: 700px;
+  }
+  
+  .image-container:nth-child(11) {
+    top: -13%;
+    left: -13%;
+    z-index: 1;
+  }
+  
+  .image-container:nth-child(11) img {
+    width: 620px;
+  }
+  
+/* Initial style for PNG (no box-shadow, no container) */
+.image-container img {
+    height: auto;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  /* Transparent container with box-shadow on hover */
+  .image-container:hover::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% + 20px); /* Slightly larger than the image */
+    height: calc(100% + 20px);
+    background-color: rgba(255, 255, 255, 0); /* Transparent white background */
+    border-radius: 12px;
+    filter: drop-shadow(0 0 0px 10px rgba(255, 255, 255, 0.8));
+    z-index: 11; /* Ensure it appears above other elements */
+  }
+  .image-container:hover {
+
+    filter: brightness(100%) !important;
+
+    z-index: 9999;
+  }
+  .image-container:hover img {
+    transform: scale(1.1); /* Slightly enlarge hovered image */
+    z-index: 12; /* Bring hovered image to the front */
+  }
+  /* Dim other images on hover */
+  /* .image-container:hover ~ .image-container img {
+    opacity: 0.2; 
+  } */
+  
