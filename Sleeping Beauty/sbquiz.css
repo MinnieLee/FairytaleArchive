@@ -1,0 +1,93 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: "Nunito Sans", sans-serif;
+  }
+  
+  :root {
+    --hue-neutral: 200;
+    --hue-wrong: 0;
+    --hue-correct: 145;
+  }
+  
+  body {
+    --hue: var(--hue-neutral);
+    padding: 0;
+    margin: 0;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff5f8; /* Light neutral background */
+  }
+  
+  body.correct {
+    --hue: var(--hue-correct);
+  }
+  
+  body.wrong {
+    --hue: var(--hue-wrong);
+  }
+  
+  .container {
+    width: 800px;
+    max-width: 80%;
+    background-color: white; /* White for the container */
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 10px 2px #f45e7c; /* Light orange for shadow */
+  }
+  
+  .btn-grid {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 10px;
+    margin: 20px 0;
+  }
+  
+  .btn {
+    --hue: var(--hue-neutral);
+    border: 1px solid black;
+    background-color: #f45e7c; /* Light orange for buttons */
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: white; /* White text */
+    outline: none;
+  }
+  
+  .btn:hover {
+    border-color: #f2486a;; /* Darker orange for hover effect */
+  }
+  
+  .btn.correct {
+    --hue: var(--hue-correct);
+    background-color: #6dff92; /* Green background */
+    border-color: #6dff92;
+    color: white; /* White text for contrast */
+  }
+  
+  .btn.wrong {
+    --hue: var(--hue-wrong);
+    background-color: #ff4570; /* Red background */
+    border-color: #ff4570;
+    color: white; /* White text for contrast */
+  }
+  
+  .start-btn, .next-btn {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    background-color: #f45e7c; /* Light orange for start/next buttons */
+    color: white; /* White text */
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .hide {
+    display: none;
+  }
+  
