@@ -24,6 +24,7 @@ body {
 @media only screen and (max-width: 780px) {
     .containerr {
         grid-template-columns: 1fr;
+        height: unset;
     }
 }
 
@@ -169,16 +170,6 @@ body {
     /* Ensure the border doesn't affect layout */
 }
 
-/* .subtitle .square-box:hover {
-width: 130px; 
-height: 100px;
-background-color: #ffffff00; 
-border-radius: 15px; 
-flex-shrink: 0; 
-margin-left: 0px;
-} */
-
-
 /* General styling for the article sections */
 
 article {
@@ -194,6 +185,12 @@ article {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
 
+}
+
+@media only screen and (max-width: 800px) {
+    article {
+        overflow-y: unset;
+    }
 }
 
 h2 {
@@ -280,7 +277,7 @@ section {
 
 /* Third Section */
 .section-three {
-    flex: 0.1;
+    /* flex: 0.1; */
     background-color: #f9f5f2;
     padding: 10px;
     border-radius: 0px;
@@ -322,12 +319,6 @@ section {
     font-weight: 670;
  
 }
-
-/* .readings p {
-        margin-bottom: 5px;
-        font-size: 16px;
-        color: #555;
-    } */
 
 /* Buttons for Section 3*/
 .circle-button {
@@ -513,6 +504,13 @@ section {
         width: 50px;
         height: 50px;
     }
+
+    .middle-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+        font-weight: 570;
+     
+    }
 }
 
 @media only screen and (max-width: 500px) {
@@ -530,6 +528,13 @@ section {
     .memo-button {
         width: 50px;
         height: 50px;
+    }
+
+    .middle-title {
+        font-size: 16px;
+        margin-bottom: 10px;
+        font-weight: 600;
+     
     }
 }
 
