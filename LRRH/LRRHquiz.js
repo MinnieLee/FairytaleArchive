@@ -1,130 +1,197 @@
-const startButton = document.getElementById('start-btn')
-const nextButton = document.getElementById('next-btn')
-const questionContainerElement = document.getElementById('question-container')
-const questionElement = document.getElementById('question')
-const answerButtonsElement = document.getElementById('answer-buttons')
+const moves = document.getElementById("moves-count");
+const timeValue = document.getElementById("time");
+const startButton = document.getElementById("start");
+const stopButton = document.getElementById("stop");
+const homeButton = document.getElementById("home");
+const gameContainer = document.querySelector(".game-container");
+const result = document.getElementById("result");
+const controls = document.querySelector(".controls-container");
+let cards;
+let interval;
+let firstCard = false;
+let secondCard = false;
 
-let shuffledQuestions, currentQuestionIndex
+//Items array
+const items = [
+  { name: "Red cape", image: "LR11.png" },
+  { name: "Basket", image: "LR22.png" },
+  { name: "Wolf", image: "LR33.png" },
+  { name: "Forest", image: "LR44.png" },
+  { name: "House", image: "LR55.png" },
+  { name: "Red cape", image: "LR11.png" },
+  { name: "Basket", image: "LR22.png" },
+  { name: "Wolf", image: "LR33.png" },
+  { name: "Forest", image: "LR44.png" },
+  { name: "House", image: "LR55.png" },
+  { name: "Red cape", image: "LR11.png" },
+  { name: "Basket", image: "LR22.png" },
+];
 
-startButton.addEventListener('click', startGame)
-nextButton.addEventListener('click', () => {
-    currentQuestionIndex++
-    setNextQuestion()
-})
+//Initial Time
+let seconds = 0,
+  minutes = 0;
+//Initial moves and win count
+let movesCount = 0,
+  winCount = 0;
 
-function startGame() {
-    startButton.classList.add('hide')
-    shuffledQuestions = questions.sort(() => Math.random() - .5)
-    currentQuestionIndex = 0
-    questionContainerElement.classList.remove('hide')
-    setNextQuestion()
-}
+//For timer
+const timeGenerator = () => {
+  seconds += 1;
+  //minutes logic
+  if (seconds >= 60) {
+    minutes += 1;
+    seconds = 0;
+  }
+  //format time before displaying
+  let secondsValue = seconds < 10 ? `0${seconds}` : seconds;
+  let minutesValue = minutes < 10 ? `0${minutes}` : minutes;
+  timeValue.innerHTML = `<span>Time:</span>${minutesValue}:${secondsValue}`;
+};
 
-function setNextQuestion() {
-    resetState()
-    showQuestion(shuffledQuestions[currentQuestionIndex])
-}
+//For calculating moves
+const movesCounter = () => {
+  movesCount += 1;
+  moves.innerHTML = `<span>Moves:</span>${movesCount}`;
+};
 
-function showQuestion(question) {
-    questionElement.innerText = question.question
-    question.answers.forEach(answer => {
-        const button = document.createElement('button')
-        button.innerText = answer.text
-        button.classList.add('btn')
-        if (answer.correct) {
-            button.dataset.correct = answer.correct
+//Pick random objects from the items array
+const generateRandom = (size = 4) => {
+  //temporary array
+  let tempArray = [...items];
+  //initializes cardValues array
+  let cardValues = [];
+  //size should be double (4*4 matrix)/2 since pairs of objects would exist
+  size = (size * size) / 2;
+  //Random object selection
+  for (let i = 0; i < size; i++) {
+    const randomIndex = Math.floor(Math.random() * tempArray.length);
+    cardValues.push(tempArray[randomIndex]);
+    //once selected remove the object from temp array
+    tempArray.splice(randomIndex, 1);
+  }
+  return cardValues;
+};
+
+const matrixGenerator = (cardValues, size = 4) => {
+  gameContainer.innerHTML = "";
+  cardValues = [...cardValues, ...cardValues];
+  //simple shuffle
+  cardValues.sort(() => Math.random() - 0.5);
+  for (let i = 0; i < size * size; i++) {
+    /*
+        Create Cards
+        before => front side (contains question mark)
+        after => back side (contains actual image);
+        data-card-values is a custom attribute which stores the names of the cards to match later
+      */
+    gameContainer.innerHTML += `
+     <div class="card-container" data-card-value="${cardValues[i].name}">
+        <div class="card-before">?</div>
+        <div class="card-after">
+        <img src="${cardValues[i].image}" class="image"/></div>
+     </div>
+     `;
+  }
+  //Grid
+  gameContainer.style.gridTemplateColumns = `repeat(${size},auto)`;
+
+  //Cards
+  cards = document.querySelectorAll(".card-container");
+  cards.forEach((card) => {
+    card.addEventListener("click", () => {
+      //If selected card is not matched yet then only run (i.e already matched card when clicked would be ignored)
+      if (!card.classList.contains("matched")) {
+        //flip the cliked card
+        card.classList.add("flipped");
+        //if it is the firstcard (!firstCard since firstCard is initially false)
+        if (!firstCard) {
+          //so current card will become firstCard
+          firstCard = card;
+          //current cards value becomes firstCardValue
+          firstCardValue = card.getAttribute("data-card-value");
+        } else {
+          //increment moves since user selected second card
+          movesCounter();
+          //secondCard and value
+          secondCard = card;
+          let secondCardValue = card.getAttribute("data-card-value");
+          if (firstCardValue == secondCardValue) {
+            //if both cards match add matched class so these cards would beignored next time
+            firstCard.classList.add("matched");
+            secondCard.classList.add("matched");
+            //set firstCard to false since next card would be first now
+            firstCard = false;
+            //winCount increment as user found a correct match
+            winCount += 1;
+            //check if winCount ==half of cardValues
+            if (winCount == Math.floor(cardValues.length / 2)) {
+              result.innerHTML = `<h2>You Won</h2>
+            <h4>Moves: ${movesCount}</h4>`;
+              stopGame();
+            }
+          } else {
+            //if the cards dont match
+            //flip the cards back to normal
+            let [tempFirst, tempSecond] = [firstCard, secondCard];
+            firstCard = false;
+            secondCard = false;
+            let delay = setTimeout(() => {
+              tempFirst.classList.remove("flipped");
+              tempSecond.classList.remove("flipped");
+            }, 900);
+          }
         }
-        button.addEventListener('click', selectAnswer)
-        answerButtonsElement.appendChild(button)
-    })
-}
+      }
+    });
+  });
+};
 
-function resetState() {
-    clearStatusClass(document.body)
-    nextButton.classList.add('hide')
-    while (answerButtonsElement.firstChild) {
-        answerButtonsElement.removeChild(answerButtonsElement.firstChild)
-    }
-}
+//Start game
+startButton.addEventListener("click", () => {
+  movesCount = 0;
+  seconds = 0;
+  minutes = 0;
+  //controls amd buttons visibility
+  controls.classList.add("hide");
+  stopButton.classList.remove("hide");
+  startButton.classList.add("hide");
+  //Start timer
+  interval = setInterval(timeGenerator, 1000);
+  //initial moves
+  moves.innerHTML = `<span>Moves:</span> ${movesCount}`;
+  initializer();
+});
 
-function selectAnswer(e) {
-    const selectedButton = e.target
-    const correct = selectedButton.dataset.correct
-    setStatusClass(document.body, correct)
-    Array.from(answerButtonsElement.children).forEach(button => {
-        setStatusClass(button, button.dataset.correct)
-    })
-    if (shuffledQuestions.length > currentQuestionIndex + 1) {
-        nextButton.classList.remove('hide')
-    } else {
-        startButton.innerText = 'Return'
-        startButton.classList.remove('hide')
-        startButton.addEventListener('click', returnToHome)
-    }
-}
+//Stop game
+stopButton.addEventListener(
+  "click",
+  (stopGame = () => {
+    controls.classList.remove("hide");
+    stopButton.classList.add("hide");
+    homeButton.classList.add("hide");
+    startButton.classList.remove("hide");
+    clearInterval(interval);
+  })
+);
 
-function returnToHome() {
-    window.location.href = 'LRRH.html' //Back to the "Little Red Riding Hood" mainpage
-}
+startButton.addEventListener("click", () => {
+    movesCount = 0;
+    seconds = 0;
+    minutes = 0;
+    controls.classList.add("hide");
+    stopButton.classList.remove("hide");
+    homeButton.classList.remove("hide"); // Show Home button
+    startButton.classList.add("hide");
+    interval = setInterval(timeGenerator, 1000);
+    moves.innerHTML = `<span>Moves:</span> ${movesCount}`;
+    initializer();
+  });
 
-function setStatusClass(element, correct) {
-    clearStatusClass(element)
-    if (correct) {
-        element.classList.add('correct')
-    } else {
-        element.classList.add('wrong')
-    }
-}
-
-function clearStatusClass(element) {
-    element.classList.remove('correct')
-    element.classList.remove('wrong')
-}
-
-const questions = [
-    {
-        question: 'What was Little Red Riding Hood carrying to her grandmother house?',
-        answers: [
-            { text: 'basket of flowers', correct: false },
-            { text: 'basket of food', correct: true },
-            { text: 'basket of toys', correct: false },
-            { text: 'basket of books', correct: false }
-        ]
-    },
-    {
-        question: 'Who reached the grandmother’s house first?',
-        answers: [
-            { text: 'Little Red Riding Hood', correct: false },
-            { text: 'The wolf', correct: true },
-            { text: 'The huntsman', correct: false },
-            { text: 'The grandmother herself', correct: false }
-        ]
-    },
-    {
-        question: 'How was the wolf defeated in most versions of the story?',
-        answers: [
-            { text: 'Little Red Riding Hood outsmarts him', correct: false },
-            { text: 'The grandmother defeats him', correct: false },
-            { text: 'A huntsman or lumberjack saves the day', correct: true },
-            { text: 'The wolf simply leaves', correct: false }
-        ]
-    },
-    {
-        question: 'What lesson does "Little Red Riding Hood" teach?',
-        answers: [
-            { text: 'Always share your food with strangers', correct: false },
-            { text: 'Wolves are misunderstood creatures', correct: false },
-            { text: 'Always carry a weapon', correct: false },
-            { text: 'Never stray off the path or talk to strangers', correct: true }
-        ]
-    },
-    {
-        question: 'What happens to the grandmother in older versions of the story?',
-        answers: [
-            { text: 'She is eaten by the wolf', correct: true },
-            { text: 'She runs away and hides', correct: false },
-            { text: 'She defeats the wolf herself', correct: false },
-            { text: 'She is saved by Little Red Riding Hood', correct: false }
-        ]
-    }
-]
+//Initialize values and func calls
+const initializer = () => {
+  result.innerText = "";
+  winCount = 0;
+  let cardValues = generateRandom();
+  console.log(cardValues);
+  matrixGenerator(cardValues);
+};
